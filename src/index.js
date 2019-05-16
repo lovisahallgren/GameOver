@@ -164,13 +164,17 @@ function hitBomb(player, bubble) {
   scoreText.setText('Score: ' + score);
 
   bubbleCount++;
+  console.log(bubbleCount);
 
   // if (bubbles.countActive(true) === 0) {
   //   bubbles = 2;
   // }
 
   if (bubbles.countActive(true) === 0) {
-    console.log(bubbleCount);
+    bubbles.add('bubble', true);
+    // bubbles.children.iterate(function(child) {
+    //   child.addMultiple('bubble', true);
+    // });
   }
 
   // if (bubble.countActive(true) === 0) {
