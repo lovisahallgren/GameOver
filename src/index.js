@@ -28,6 +28,7 @@ let player;
 // let stars;
 let bubbles;
 let cursors;
+let bubbleCount = 0;
 
 function preload() {
   this.load.image('sky', '../src/assets/sky.png');
@@ -93,7 +94,7 @@ function create() {
 
   // bubbles = this.physics.add.group({
   //   key: 'bubble',
-  //   repeat: 1,
+  //   repeat: bubbleCount,
   //   setXY: {
   //     x: 12,
   //     y: 0,
@@ -115,7 +116,10 @@ function create() {
     fill: '#000'
   });
 
-  bubbles = this.physics.add.group();
+  bubbles = this.physics.add.group({
+    key: 'bubble',
+    repeat: bubbleCount
+  });
 
   this.physics.add.collider(bubbles, platforms);
 
@@ -126,7 +130,7 @@ function create() {
       ? Phaser.Math.Between(400, 800)
       : Phaser.Math.Between(0, 400);
   var bubble = bubbles.create(x, 16, 'bubble');
-  bubble.setBounce(1);
+  bubble.setBounce(0.2);
   bubble.setCollideWorldBounds(true);
   bubble.setVelocity(Phaser.Math.Between(-200, 200), 20);
 }
@@ -159,15 +163,18 @@ function hitBomb(player, bubble) {
   score += 10;
   scoreText.setText('Score: ' + score);
 
-  // let bubble;
-  if (bubbles.countActive(true) === 0) {
-    bubbles.children.iterate(function(child) {
-      child.enableBody(true, child.x, 0, true, true);
-    });
-  }
+  bubbleCount++;
 
   // if (bubbles.countActive(true) === 0) {
-  //   bubbles.children.iterate(function(child) {
+  //   bubbles = 2;
+  // }
+
+  if (bubbles.countActive(true) === 0) {
+    console.log(bubbleCount);
+  }
+
+  // if (bubble.countActive(true) === 0) {
+  //   bubble.children.iterate(function(child) {
   //     child.enableBody(true, child.x, 0, true, true);
   //   });
   // }
