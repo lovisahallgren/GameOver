@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
-// import { config } from './config';
+// import config from './config';
 
-var config = {
+const config = {
   type: Phaser.AUTO,
   width: 800,
   height: 600,
@@ -21,10 +21,10 @@ var config = {
   }
 };
 
-var game = new Phaser.Game(config);
-var platforms;
-var score = 0;
-var scoreText;
+let game = new Phaser.Game(config);
+let platforms;
+let score = 0;
+let scoreText;
 let player;
 // let stars;
 let bubbles;
@@ -106,19 +106,19 @@ function create() {
   });
 
   bullets = this.anims.create({
-      key: 'fire',
-      frames: [
-          {
-            key: 'bullets',
-            frame: 0
-          }
-        ],
-      frameRate: 10,
-      repeat: -1
-    });
+    key: 'fire',
+    frames: [
+      {
+        key: 'bullets',
+        frame: 0
+      }
+    ],
+    frameRate: 10,
+    repeat: -1
+  });
 
   bubbles.children.iterate(function(child) {
-    child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+    child.setBounce(1);
   });
 
   this.physics.add.collider(player, platforms);
@@ -157,7 +157,7 @@ function update() {
     player.setVelocityY(-530);
   }
 
-  if(cursors.space.isDown) {
+  if (cursors.space.isDown) {
     fire();
   }
 }
@@ -166,7 +166,6 @@ function fire() {
   player.setVelocityY(-260);
 
   player.anims.play('fire');
-
 }
 
 function hitBomb(player, bubble) {
@@ -177,22 +176,21 @@ function hitBomb(player, bubble) {
 
   if (bubbles.countActive(true) === 0) {
     bubbleCount += 1;
+    setTimeout(() => {
+      bubbles.children.iterate(function(child) {
+        child.enableBody(true, child.x, 0, true, true);
+      });
+      let x =
+        player.x < 400
+          ? Phaser.Math.Between(400, 800)
+          : Phaser.Math.Between(0, 400);
 
-    bubbles.children.iterate(function(child) {
-      child.enableBody(true, child.x, 0, true, true);
-    });
-    let x =
-      player.x < 400
-        ? Phaser.Math.Between(400, 800)
-        : Phaser.Math.Between(0, 400);
-
-    let bubble = bubbles.create(x, 16, 'bubble');
-    bubble.setBounce(1);
-    bubble.setCollideWorldBounds(true);
-    bubble.setVelocity(Phaser.Math.Between(-200, 200), 20);
+      let bubble = bubbles.create(x, 16, 'bubble');
+      bubble.setBounce(1);
+      bubble.setCollideWorldBounds(true);
+      bubble.setVelocity(Phaser.Math.Between(-200, 200), 20);
+    }, 1000);
   }
-
-
 
   // if (bubbles.countActive(true) === 0) {
   //   bubbles.children.iterate(function(child) {
