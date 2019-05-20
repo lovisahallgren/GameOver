@@ -29,7 +29,7 @@ let player;
 // let stars;
 let bubbles;
 let cursors;
-let bubbleCount = 0;
+let bubbleCount;
 
 function preload() {
   this.load.image('sky', '../src/assets/sky.png');
@@ -93,19 +93,19 @@ function create() {
     repeat: -1
   });
 
-  // bubbles = this.physics.add.group({
-  //   key: 'bubble',
-  //   repeat: bubbleCount,
-  //   setXY: {
-  //     x: 12,
-  //     y: 0,
-  //     stepX: 70
-  //   }
-  // });
+  bubbles = this.physics.add.group({
+    key: 'bubble',
+    repeat: bubbleCount,
+    setXY: {
+      x: 12,
+      y: 0,
+      stepX: 70
+    }
+  });
 
-  // bubbles.children.iterate(function(child) {
-  //   child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-  // });
+  bubbles.children.iterate(function(child) {
+    child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+  });
 
   this.physics.add.collider(player, platforms);
   // this.physics.add.collider(bubbles, platforms);
@@ -117,23 +117,9 @@ function create() {
     fill: '#000'
   });
 
-  bubbles = this.physics.add.group({
-    key: 'bubble',
-    repeat: bubbleCount
-  });
-
   this.physics.add.collider(bubbles, platforms);
 
   this.physics.add.collider(player, bubbles, hitBomb, null, this);
-
-  let x =
-    player.x < 400
-      ? Phaser.Math.Between(400, 800)
-      : Phaser.Math.Between(0, 400);
-  let bubble = bubbles.create(x, 16, 'bubble');
-  bubble.setBounce(0.2);
-  bubble.setCollideWorldBounds(true);
-  bubble.setVelocity(Phaser.Math.Between(-200, 200), 20);
 }
 
 function update() {
@@ -164,19 +150,30 @@ function hitBomb(player, bubble) {
   score += 10;
   scoreText.setText('Score: ' + score);
 
-  bubbleCount++;
-  console.log(bubbleCount);
-
-  // if (bubbles.countActive(true) === 0) {
-  //   console.log(bubbles.repeat(bubbleCount.toString()));
-  // }
-
   if (bubbles.countActive(true) === 0) {
-    // bubbles.add('bubble', true);
+    bubbleCount += 1;
+
     bubbles.children.iterate(function(child) {
       child.enableBody(true, child.x, 0, true, true);
     });
+    let x =
+      player.x < 400
+        ? Phaser.Math.Between(400, 800)
+        : Phaser.Math.Between(0, 400);
+
+    let bubble = bubbles.create(x, 16, 'bubble');
+    bubble.setBounce(1);
+    bubble.setCollideWorldBounds(true);
+    bubble.setVelocity(Phaser.Math.Between(-200, 200), 20);
   }
+
+  // if (bubbles.countActive(true) === 0) {
+  //   bubbles.children.iterate(function(child) {
+  //     // bubbles.addMultiple(bubble, true);
+  //     child.enableBody(true, child.x, 0, true, true);
+  //     return bubbleCount++;
+  //   });
+  // }
 
   // if (bubbles.countActive(true) === 0) {
   //   bubbles.children.iterate(function(child) {
