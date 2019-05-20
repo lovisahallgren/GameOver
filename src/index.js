@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+// import { config } from './config';
 
 var config = {
   type: Phaser.AUTO,
@@ -125,11 +126,11 @@ function create() {
 
   this.physics.add.collider(player, bubbles, hitBomb, null, this);
 
-  var x =
+  let x =
     player.x < 400
       ? Phaser.Math.Between(400, 800)
       : Phaser.Math.Between(0, 400);
-  var bubble = bubbles.create(x, 16, 'bubble');
+  let bubble = bubbles.create(x, 16, 'bubble');
   bubble.setBounce(0.2);
   bubble.setCollideWorldBounds(true);
   bubble.setVelocity(Phaser.Math.Between(-200, 200), 20);
@@ -167,18 +168,18 @@ function hitBomb(player, bubble) {
   console.log(bubbleCount);
 
   // if (bubbles.countActive(true) === 0) {
-  //   bubbles = 2;
+  //   console.log(bubbles.repeat(bubbleCount.toString()));
   // }
 
   if (bubbles.countActive(true) === 0) {
-    bubbles.add('bubble', true);
-    // bubbles.children.iterate(function(child) {
-    //   child.addMultiple('bubble', true);
-    // });
+    // bubbles.add('bubble', true);
+    bubbles.children.iterate(function(child) {
+      child.enableBody(true, child.x, 0, true, true);
+    });
   }
 
-  // if (bubble.countActive(true) === 0) {
-  //   bubble.children.iterate(function(child) {
+  // if (bubbles.countActive(true) === 0) {
+  //   bubbles.children.iterate(function(child) {
   //     child.enableBody(true, child.x, 0, true, true);
   //   });
   // }
