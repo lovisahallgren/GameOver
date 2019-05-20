@@ -29,6 +29,7 @@ let player;
 // let stars;
 let bubbles;
 let bullets;
+let bullet;
 let cursors;
 let bubbleCount;
 
@@ -59,10 +60,10 @@ function create() {
   // platforms.create(750, 220, 'ground');
 
   player = this.physics.add.sprite(100, 450, 'dude');
-
   player.setBounce(0.2);
   player.setCollideWorldBounds(true);
   player.body.setGravityY(300);
+  bullet = this.physics.add.sprite(player.x, player.y, 'bullets');
 
   this.anims.create({
     key: 'left',
@@ -105,17 +106,17 @@ function create() {
     }
   });
 
-  bullets = this.anims.create({
-    key: 'fire',
-    frames: [
-      {
-        key: 'bullets',
-        frame: 0
-      }
-    ],
-    frameRate: 10,
-    repeat: -1
-  });
+  // bullet = this.physics.add.sprite({
+  //     key: 'bullets',
+  //     frames: [
+  //         {
+  //           key: 'bullets',
+  //           frame: 0
+  //         }
+  //       ],
+  //     frameRate: 10,
+  //     repeat: 20
+  //   });
 
   bubbles.children.iterate(function(child) {
     child.setBounce(1);
@@ -134,6 +135,7 @@ function create() {
   this.physics.add.collider(bubbles, platforms);
 
   this.physics.add.collider(player, bubbles, hitBomb, null, this);
+  this.physics.add.collider(bullet, platforms);
 }
 
 function update() {
@@ -158,14 +160,14 @@ function update() {
   }
 
   if (cursors.space.isDown) {
-    fire();
+    fireBullet();
   }
 }
 
-function fire() {
-  player.setVelocityY(-260);
-
-  player.anims.play('fire');
+function fireBullet() {
+  bullet.setVelocityY(-500);
+  bullet.setCollideWorldBounds(true);
+  bullet.body.setGravityY(-500);
 }
 
 function hitBomb(player, bubble) {
