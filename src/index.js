@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+// import { config } from './config';
 
 var config = {
   type: Phaser.AUTO,
@@ -25,15 +26,16 @@ var platforms;
 var score = 0;
 var scoreText;
 let player;
-let stars;
-let bombs;
+// let stars;
+let bubbles;
 let cursors;
+let bubbleCount;
 
 function preload() {
   this.load.image('sky', '../src/assets/sky.png');
   this.load.image('ground', '../src/assets/platform.png');
-  this.load.image('star', '../src/assets/star.png');
-  this.load.image('bomb', '../src/assets/bomb.png');
+  // this.load.image('star', '../src/assets/star.png');
+  this.load.image('bubble', '../src/assets/bubble.png');
   this.load.spritesheet('dude', '../src/assets/dude.png', {
     frameWidth: 32,
     frameHeight: 48
@@ -50,9 +52,9 @@ function create() {
     .setScale(2)
     .refreshBody();
 
-  platforms.create(600, 400, 'ground');
-  platforms.create(50, 250, 'ground');
-  platforms.create(750, 220, 'ground');
+  // platforms.create(600, 400, 'ground');
+  // platforms.create(50, 250, 'ground');
+  // platforms.create(750, 220, 'ground');
 
   player = this.physics.add.sprite(100, 450, 'dude');
 
@@ -91,9 +93,9 @@ function create() {
     repeat: -1
   });
 
-  stars = this.physics.add.group({
-    key: 'star',
-    repeat: 11,
+  bubbles = this.physics.add.group({
+    key: 'bubble',
+    repeat: bubbleCount,
     setXY: {
       x: 12,
       y: 0,
@@ -101,25 +103,23 @@ function create() {
     }
   });
 
-  stars.children.iterate(function(child) {
+  bubbles.children.iterate(function(child) {
     child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
   });
 
   this.physics.add.collider(player, platforms);
-  this.physics.add.collider(stars, platforms);
+  // this.physics.add.collider(bubbles, platforms);
 
-  this.physics.add.overlap(player, stars, collectStar, null, this);
+  // this.physics.add.overlap(player, bubbles, collectStar, null, this);
 
   scoreText = this.add.text(16, 16, 'score: 0', {
     fontSize: '32px',
     fill: '#000'
   });
 
-  bombs = this.physics.add.group();
+  this.physics.add.collider(bubbles, platforms);
 
-  this.physics.add.collider(bombs, platforms);
-
-  this.physics.add.collider(player, bombs, hitBomb, null, this);
+  this.physics.add.collider(player, bubbles, hitBomb, null, this);
 }
 
 function update() {
@@ -144,34 +144,50 @@ function update() {
   }
 }
 
-function collectStar(player, star) {
-  star.disableBody(true, true);
+function hitBomb(player, bubble) {
+  bubble.disableBody(true, true);
 
   score += 10;
   scoreText.setText('Score: ' + score);
 
-  if (stars.countActive(true) === 0) {
-    stars.children.iterate(function(child) {
+  if (bubbles.countActive(true) === 0) {
+    bubbleCount += 1;
+
+    bubbles.children.iterate(function(child) {
       child.enableBody(true, child.x, 0, true, true);
     });
-
-    var x =
+    let x =
       player.x < 400
         ? Phaser.Math.Between(400, 800)
         : Phaser.Math.Between(0, 400);
-    var bomb = bombs.create(x, 16, 'bomb');
-    bomb.setBounce(1);
-    bomb.setCollideWorldBounds(true);
-    bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
+
+    let bubble = bubbles.create(x, 16, 'bubble');
+    bubble.setBounce(1);
+    bubble.setCollideWorldBounds(true);
+    bubble.setVelocity(Phaser.Math.Between(-200, 200), 20);
   }
+
+  // if (bubbles.countActive(true) === 0) {
+  //   bubbles.children.iterate(function(child) {
+  //     // bubbles.addMultiple(bubble, true);
+  //     child.enableBody(true, child.x, 0, true, true);
+  //     return bubbleCount++;
+  //   });
+  // }
+
+  // if (bubbles.countActive(true) === 0) {
+  //   bubbles.children.iterate(function(child) {
+  //     child.enableBody(true, child.x, 0, true, true);
+  //   });
+  // }
 }
 
-function hitBomb(player, bomb) {
-  this.physics.pause();
+// function hitBomb(player, bomb) {
+//   this.physics.pause();
 
-  player.setTint(0xff0000);
+//   player.setTint(0xff0000);
 
-  player.anims.play('turn');
+//   player.anims.play('turn');
 
-  gameOver = true;
-}
+//   gameOver = true;
+// }
