@@ -98,12 +98,12 @@ function create() {
 
   bubbles = this.physics.add.group({
     key: 'bubble',
-    repeat: bubbleCount,
-    setXY: {
-      x: 12,
-      y: 0,
-      stepX: 70
-    }
+    repeat: bubbleCount
+    // setXY: {
+    //   x: 12,
+    //   y: 0,
+    //   stepX: 70
+    // }
   });
 
   // bullet = this.physics.add.sprite({
@@ -120,6 +120,8 @@ function create() {
 
   bubbles.children.iterate(function(child) {
     child.setBounce(1);
+    child.setVelocity(Phaser.Math.Between(-200, 200), 20);
+    child.setCollideWorldBounds(true);
   });
 
   this.physics.add.collider(player, platforms);
@@ -180,13 +182,14 @@ function hitBomb(player, bubble) {
     bubbleCount += 1;
     setTimeout(() => {
       bubbles.children.iterate(function(child) {
-        child.enableBody(true, child.x, 0, true, true);
+        child.enableBody(true, Phaser.Math.Between(0, 800), 0, true, true);
+        child.setVelocity(Phaser.Math.Between(-200, 200), 20);
       });
+
       let x =
         player.x < 400
           ? Phaser.Math.Between(400, 800)
           : Phaser.Math.Between(0, 400);
-
       let bubble = bubbles.create(x, 16, 'bubble');
       bubble.setBounce(1);
       bubble.setCollideWorldBounds(true);
