@@ -26,7 +26,6 @@ let platforms;
 let score = 0;
 let scoreText;
 let player;
-// let stars;
 let bubbles;
 let bullets;
 let bullet;
@@ -35,8 +34,7 @@ let bubbleCount;
 
 function preload() {
   this.load.image('sky', '../src/assets/sky.png');
-  this.load.image('ground', '../src/assets/platform.png');
-  // this.load.image('star', '../src/assets/star.png');
+  this.load.image('ground', '../src/assets/ground.png');
   this.load.image('bullets', '../src/assets/bullet.png');
   this.load.image('bubble', '../src/assets/bubble.png');
   this.load.spritesheet('dude', '../src/assets/dude.png', {
@@ -54,10 +52,6 @@ function create() {
     .create(400, 568, 'ground')
     .setScale(2)
     .refreshBody();
-
-  // platforms.create(600, 400, 'ground');
-  // platforms.create(50, 250, 'ground');
-  // platforms.create(750, 220, 'ground');
 
   player = this.physics.add.sprite(100, 450, 'dude');
   player.setBounce(0.2);
@@ -125,24 +119,20 @@ function create() {
     child.setCollideWorldBounds(true);
   });
 
-  this.physics.add.collider(player, platforms);
-  // this.physics.add.collider(bubbles, platforms);
-
-  // this.physics.add.overlap(player, bubbles, collectStar, null, this);
-
   scoreText = this.add.text(16, 16, 'score: 0', {
     fontSize: '32px',
     fill: '#000'
   });
 
+  this.physics.add.collider(player, platforms);
   this.physics.add.collider(bubbles, platforms);
 
-  this.physics.add.collider(player, bubbles, hitBomb, null, this);
+  this.physics.add.collider(player, bubbles, hitByBubble, null, this);
   this.physics.add.collider(bullet, platforms);
+  this.physics.add.overlap(bullet, bubbles, shootBubble, null, this);
 }
 
 function update() {
-
   cursors = this.input.keyboard.createCursorKeys();
 
   if (cursors.left.isDown) {
@@ -159,23 +149,22 @@ function update() {
     player.anims.play('turn');
   }
 
-  if (cursors.up.isDown && player.body.touching.down) {
-    player.setVelocityY(-530);
-  }
+  // if (cursors.up.isDown && player.body.touching.down) {
+  //   player.setVelocityY(-530);
+  // }
 
   if (cursors.space.isDown) {
     fireBullet();
   }
-
 }
 
 function fireBullet() {
-  bullet.enableBody(true, player.x, player.y)
+  bullet.enableBody(true, player.x, player.y);
   bullet.setVelocityY(-500);
   bullet.body.setGravityY(-500);
 }
 
-function hitBomb(player, bubble) {
+function shootBubble(bullet, bubble) {
   bubble.disableBody(true, true);
 
   score += 10;
@@ -199,28 +188,14 @@ function hitBomb(player, bubble) {
       bubble.setVelocity(Phaser.Math.Between(-200, 200), 20);
     }, 1000);
   }
-
-  // if (bubbles.countActive(true) === 0) {
-  //   bubbles.children.iterate(function(child) {
-  //     // bubbles.addMultiple(bubble, true);
-  //     child.enableBody(true, child.x, 0, true, true);
-  //     return bubbleCount++;
-  //   });
-  // }
-
-  // if (bubbles.countActive(true) === 0) {
-  //   bubbles.children.iterate(function(child) {
-  //     child.enableBody(true, child.x, 0, true, true);
-  //   });
-  // }
 }
 
-// function hitBomb(player, bomb) {
-//   this.physics.pause();
+function hitByBubble(player, bubble) {
+  this.physics.pause();
 
-//   player.setTint(0xff0000);
+  player.setTint(0xff0000);
 
-//   player.anims.play('turn');
+  player.anims.play('turn');
 
-//   gameOver = true;
-// }
+  gameOver = true;
+}
