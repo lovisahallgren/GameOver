@@ -26,19 +26,19 @@ let platforms;
 let score = 0;
 let scoreText;
 let player;
-let bubbles;
+let yellowbubbles;
 let redbubbles;
 let bullets;
 let bullet;
 let cursors;
 let bubbleCount;
-let bubbleSplit = -1;
+let bubbleSplit;
 
 function preload() {
   this.load.image('sky', '../src/assets/sky.png');
   this.load.image('ground', '../src/assets/ground.png');
   this.load.image('bullets', '../src/assets/bullet.png');
-  this.load.image('bubble', '../src/assets/bubble.png');
+  this.load.image('yellowbubble', '../src/assets/bubble.png');
   this.load.image('redbubble', '../src/assets/redbubble.png');
   this.load.spritesheet('dude', '../src/assets/dude.png', {
     frameWidth: 32,
@@ -94,8 +94,8 @@ function create() {
     repeat: -1
   });
 
-  bubbles = this.physics.add.group({
-    key: 'bubble',
+  yellowbubbles = this.physics.add.group({
+    key: 'yellowbubble',
     repeat: bubbleCount
     // setXY: {
     //   x: 12,
@@ -105,8 +105,8 @@ function create() {
   });
 
   redbubbles = this.physics.add.group({
-    key: 'redbubble',
-    repeat: bubbleSplit
+    // key: 'redbubble'
+    // repeat: bubbleSplit
     // setXY: {
     //   x: bullet.x,
     //   y: bullet.y,
@@ -126,13 +126,7 @@ function create() {
   //     repeat: 20
   //   });
 
-  // redbubbles.children.iterate(function(child) {
-  //   child.setBounce(1);
-  //   child.setVelocity(Phaser.Math.Between(-200, 200), 20);
-  //   child.setCollideWorldBounds(true);
-  // });
-
-  bubbles.children.iterate(function(child) {
+  yellowbubbles.children.iterate(function(child) {
     child.setBounce(1);
     child.setVelocity(Phaser.Math.Between(-200, 200), 20);
     child.setCollideWorldBounds(true);
@@ -144,19 +138,18 @@ function create() {
   });
 
   this.physics.add.collider(player, platforms);
-  this.physics.add.collider(bubbles, platforms);
+  this.physics.add.collider(bullet, platforms);
+  this.physics.add.collider(yellowbubbles, platforms);
   this.physics.add.collider(redbubbles, platforms);
 
-  this.physics.add.collider(player, bubbles, hitByBubble, null, this);
+  this.physics.add.collider(player, yellowbubbles, hitByBubble, null, this);
   this.physics.add.collider(player, redbubbles, hitByBubble, null, this);
-  this.physics.add.collider(bullet, platforms);
-  this.physics.add.overlap(bullet, bubbles, shootBubble, splitBubble, this);
-  this.physics.add.overlap(bullet, redbubbles, shootBubble, null, this);
+  this.physics.add.overlap(bullet, yellowbubbles, shootBubble, null, this);
+  this.physics.add.overlap(bullet, redbubbles, shootRedBubble, null, this);
 }
 
 function update() {
   cursors = this.input.keyboard.createCursorKeys();
-  console.log(bullet.x, bullet.y);
 
   if (cursors.left.isDown) {
     player.setVelocityX(-160);
@@ -172,58 +165,47 @@ function update() {
     player.anims.play('turn');
   }
 
-  // if (cursors.up.isDown && player.body.touching.down) {
-  //   player.setVelocityY(-530);
-  // }
-
   if (cursors.space.isDown) {
     fireBullet();
   }
 }
 
 function fireBullet() {
-  bullet.enableBody(true, player.x, player.y);
+  bullet.enableBody(true, player.x, player.y, true, true);
   bullet.setVelocityY(-500);
   bullet.body.setGravityY(-500);
 }
 
-function splitBubble(bullet, bubble) {
-  // if (this.physics.world.overlap(bullet, bubbles)) {
-  // let x =
-  //   player.x < 400
-  //     ? Phaser.Math.Between(400, 800)
-  //     : Phaser.Math.Between(0, 400);
-  // redbubbles.children.iterate(function(child) {
-  //   child.enableBody(true, Phaser.Math.Between(0, 800), 0, true, true);
-  //   child.setVelocity(Phaser.Math.Between(-200, 200), 20);
-  bubbleSplit = 2;
-  // console.log(bubble);
-
-  let x = player.x;
-  let y = player.y - 200;
-  let redbubble = redbubbles.create(x, y, 'redbubble');
-  redbubble.setBounce(1);
-  redbubble.setCollideWorldBounds(true);
-  redbubble.setVelocity(Phaser.Math.Between(-200, 200), 20);
-  // });
-  // }
+function shootRedBubble(bullet, redbubble) {
+  redbubble.disableBody(true, true);
+  // redbubble.enableBody(true, 0, 0, false, false);
 }
 
-function shootBubble(bullet, bubble) {
-  bubble.disableBody(true, true);
+function shootBubble(bullet, yellowbubble) {
+  yellowbubble.disableBody(true, true);
+  bullet.disableBody(true, true);
 
   score += 10;
   scoreText.setText('Score: ' + score);
 
-  if (this.physics.add.overlap(bullet, bubbles)) {
-    console.log(bubble.x, bubble.y);
-    splitBubble();
+  if (this.physics.add.overlap(bullet, yellowbubbles)) {
+    let x = yellowbubble.x;
+    let y = yellowbubble.y;
+    for (let i = 0; i <= 1; i++) {
+      let redbubble = redbubbles.create(x, y, 'redbubble');
+      redbubble.enableBody(true, x, y, true, true);
+      redbubble.setBounce(1);
+      redbubble.setCollideWorldBounds(true);
+      redbubble.setVelocity(Phaser.Math.Between(-200, 200), 20);
+    }
   }
 
-  if (bubbles.countActive(true) === 0 && redbubbles.countActive(true) === 0) {
+  if (yellowbubbles.countActive(true) === 0) {
+    console.log(redbubbles.countActive(true));
+
     bubbleCount += 1;
     setTimeout(() => {
-      bubbles.children.iterate(function(child) {
+      yellowbubbles.children.iterate(function(child) {
         child.enableBody(true, Phaser.Math.Between(0, 800), 0, true, true);
         child.setVelocity(Phaser.Math.Between(-200, 200), 20);
       });
@@ -232,10 +214,10 @@ function shootBubble(bullet, bubble) {
         player.x < 400
           ? Phaser.Math.Between(400, 800)
           : Phaser.Math.Between(0, 400);
-      let bubble = bubbles.create(x, 16, 'bubble');
-      bubble.setBounce(1);
-      bubble.setCollideWorldBounds(true);
-      bubble.setVelocity(Phaser.Math.Between(-200, 200), 20);
+      let yellowbubble = yellowbubbles.create(x, 16, 'yellowbubble');
+      yellowbubble.setBounce(1);
+      yellowbubble.setCollideWorldBounds(true);
+      yellowbubble.setVelocity(Phaser.Math.Between(-200, 200), 20);
     }, 1000);
   }
 }
