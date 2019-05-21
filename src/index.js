@@ -102,7 +102,7 @@ function create() {
   });
 
   mediumbubbles = this.physics.add.group({
-    // key: 'mediumbubble',
+    // key: 'mediumbubble'
     // repeat: bubbleCount
     // setXY: {
     //   x: 12,
@@ -164,11 +164,17 @@ function create() {
   this.physics.add.collider(player, mediumbubbles, hitByBubble, null, this);
   this.physics.add.collider(player, smallbubbles, hitByBubble, null, this);
   this.physics.add.overlap(bullet, largebubbles, shootBubble, null, this);
-  this.physics.add.overlap(bullet, mediumbubbles, shootBubble, null, this);
+  this.physics.add.overlap(
+    bullet,
+    mediumbubbles,
+    shootMediumBubble,
+    null,
+    this
+  );
   this.physics.add.overlap(
     bullet,
     smallbubbles,
-    shootSmallerBubble,
+    shootSmallestBubble,
     null,
     this
   );
@@ -202,16 +208,16 @@ function fireBullet() {
   bullet.body.setGravityY(-500);
 }
 
-function shootSmallerBubble(bullet, mediumbubble, smallbubble) {
-  // mediumbubble.disableBody(true, true);
+function shootSmallestBubble(bullet, smallbubble) {
   smallbubble.disableBody(true, true);
+  // smallbubble.disableBody(true, true);
   bullet.disableBody(true, true);
 
   score += 10;
   scoreText.setText('Score: ' + score);
   if (
     largebubbles.countActive(true) === 0 &&
-    mediumbubble.countActive(true) === 0 &&
+    mediumbubbles.countActive(true) === 0 &&
     smallbubbles.countActive(true) === 0
   ) {
     bubbleCount += 1;
@@ -233,28 +239,17 @@ function shootSmallerBubble(bullet, mediumbubble, smallbubble) {
   }
 }
 
-function shootBubble(bullet, largebubble, mediumbubble) {
-  largebubble.disableBody(true, true);
+function shootMediumBubble(bullet, mediumbubble) {
+  mediumbubble.disableBody(true, true);
+  // mediumbubble.disableBody(true, true);
   bullet.disableBody(true, true);
+  console.log(mediumbubbles);
 
   score += 10;
   scoreText.setText('Score: ' + score);
 
-  if (this.physics.add.overlap(bullet, largebubbles)) {
-    // mediumbubble.disableBody(true, true);
-    let x = largebubble.x;
-    let y = largebubble.y;
-    for (let i = 0; i <= 1; i++) {
-      let mediumbubble = mediumbubbles.create(x, y, 'mediumbubble');
-      mediumbubble.enableBody(true, x, y, true, true);
-      mediumbubble.setBounce(1);
-      mediumbubble.setCollideWorldBounds(true);
-      mediumbubble.setVelocity(Phaser.Math.Between(-200, 200), 20);
-    }
-  }
   if (this.physics.add.overlap(bullet, mediumbubbles)) {
-    console.log('jkle');
-
+    console.log(mediumbubbles);
     // mediumbubble.disableBody(true, true);
     let x = mediumbubble.x;
     let y = mediumbubble.y;
@@ -266,6 +261,54 @@ function shootBubble(bullet, largebubble, mediumbubble) {
       smallbubble.setVelocity(Phaser.Math.Between(-200, 200), 20);
     }
   }
+  // if (this.physics.add.overlap(bullet, mediumbubbles)) {
+  //   // mediumbubble.disableBody(true, true);
+  //   let x = mediumbubble.x;
+  //   let y = mediumbubble.y;
+  //   for (let i = 0; i <= 1; i++) {
+  //     let smallbubble = smallbubbles.create(x, y, 'smallbubble');
+  //     smallbubble.enableBody(true, x, y, true, true);
+  //     smallbubble.setBounce(1);
+  //     smallbubble.setCollideWorldBounds(true);
+  //     smallbubble.setVelocity(Phaser.Math.Between(-200, 200), 20);
+  //   }
+  // }
+}
+
+function shootBubble(bullet, largebubble) {
+  largebubble.disableBody(true, true);
+  // mediumbubble.disableBody(true, true);
+  bullet.disableBody(true, true);
+  console.log(mediumbubbles);
+
+  score += 10;
+  scoreText.setText('Score: ' + score);
+
+  if (this.physics.add.overlap(bullet, largebubbles)) {
+    console.log(largebubbles);
+    // mediumbubble.disableBody(true, true);
+    let x = largebubble.x;
+    let y = largebubble.y;
+    for (let i = 0; i <= 1; i++) {
+      let mediumbubble = mediumbubbles.create(x, y, 'mediumbubble');
+      mediumbubble.enableBody(true, x, y, true, true);
+      mediumbubble.setBounce(1);
+      mediumbubble.setCollideWorldBounds(true);
+      mediumbubble.setVelocity(Phaser.Math.Between(-200, 200), 20);
+    }
+  }
+  // if (this.physics.add.overlap(bullet, mediumbubbles)) {
+  //   // mediumbubble.disableBody(true, true);
+  //   let x = mediumbubble.x;
+  //   let y = mediumbubble.y;
+  //   for (let i = 0; i <= 1; i++) {
+  //     let smallbubble = smallbubbles.create(x, y, 'smallbubble');
+  //     smallbubble.enableBody(true, x, y, true, true);
+  //     smallbubble.setBounce(1);
+  //     smallbubble.setCollideWorldBounds(true);
+  //     smallbubble.setVelocity(Phaser.Math.Between(-200, 200), 20);
+  //   }
+  // }
 }
 
 function hitByBubble(player, bubble) {
