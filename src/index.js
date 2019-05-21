@@ -63,6 +63,7 @@ function create() {
   player.setBounce(0.2);
   player.setCollideWorldBounds(true);
   player.body.setGravityY(300);
+
   bullet = this.physics.add.sprite(player.x, player.y, 'bullets');
 
   this.anims.create({
@@ -141,6 +142,7 @@ function create() {
 }
 
 function update() {
+
   cursors = this.input.keyboard.createCursorKeys();
 
   if (cursors.left.isDown) {
@@ -164,11 +166,12 @@ function update() {
   if (cursors.space.isDown) {
     fireBullet();
   }
+
 }
 
 function fireBullet() {
+  bullet.enableBody(true, player.x, player.y)
   bullet.setVelocityY(-500);
-  bullet.setCollideWorldBounds(true);
   bullet.body.setGravityY(-500);
 }
 
