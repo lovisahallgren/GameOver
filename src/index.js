@@ -168,9 +168,9 @@ function update() {
 }
 
 function fireBullet() {
+  bullet.enableBody(true, player.x, player.y)
   bullet.setVelocityY(-500);
-  // bullet.setCollideWorldBounds(true);
-  bullet.body.setGravityY(-300);
+  bullet.body.setGravityY(-500);
 }
 
 function hitBomb(player, bubble) {
