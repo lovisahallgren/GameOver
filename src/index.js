@@ -52,6 +52,10 @@ function preload() {
     frameWidth: 32,
     frameHeight: 48
   });
+  this.load.spritesheet('panda2', '../src/assets/panda2.png', {
+    frameWidth: 32,
+    frameHeight: 48
+  });
 }
 
 function create() {
@@ -71,7 +75,7 @@ function create() {
   player.body.setGravityY(300);
 
   // Player two
-  player2 = this.physics.add.sprite(700, 450, 'panda');
+  player2 = this.physics.add.sprite(700, 450, 'panda2');
   player2.setBounce(0.2);
   player2.setCollideWorldBounds(true);
   player2.body.setGravityY(300);
@@ -112,7 +116,7 @@ function create() {
 
   this.anims.create({
     key: 'left2',
-    frames: this.anims.generateFrameNumbers('panda', {
+    frames: this.anims.generateFrameNumbers('panda2', {
       start: 0,
       end: 3
     }),
@@ -124,7 +128,7 @@ function create() {
     key: 'turn2',
     frames: [
       {
-        key: 'panda',
+        key: 'panda2',
         frame: 4
       }
     ],
@@ -133,7 +137,7 @@ function create() {
 
   this.anims.create({
     key: 'right2',
-    frames: this.anims.generateFrameNumbers('panda', {
+    frames: this.anims.generateFrameNumbers('panda2', {
       start: 5,
       end: 8
     }),
