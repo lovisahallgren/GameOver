@@ -231,11 +231,11 @@ function update() {
 
   //player one keyboard
   if (cursors.left.isDown) {
-    player.setVelocityX(-160);
+    player.setVelocityX(-200);
 
     player.anims.play('left', true);
   } else if (cursors.right.isDown) {
-    player.setVelocityX(160);
+    player.setVelocityX(200);
 
     player.anims.play('right', true);
   } else {
@@ -250,11 +250,11 @@ function update() {
 
   //player two keyboard
   if (keys.A.isDown) {
-    player2.setVelocityX(-160);
+    player2.setVelocityX(-200);
 
     player2.anims.play('left2', true);
   } else if (keys.D.isDown) {
-    player2.setVelocityX(160);
+    player2.setVelocityX(200);
 
     player2.anims.play('right2', true);
   } else {
