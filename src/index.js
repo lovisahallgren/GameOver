@@ -40,20 +40,20 @@ let keys;
 let gameOver;
 
 function preload() {
-  this.load.image('field', '../src/assets/field.jpg');
+  this.load.image('bricks', '../src/assets/bricks.png');
   this.load.image('ground', '../src/assets/ground.png');
-  this.load.image('bullets', '../src/assets/bullet.png');
+  this.load.image('bullets', '../src/assets/bambu1.png');
   this.load.image('largebubble', '../src/assets/largebubble.png');
   this.load.image('mediumbubble', '../src/assets/mediumbubble.png');
   this.load.image('smallbubble', '../src/assets/smallbubble.png');
-  this.load.spritesheet('dude', '../src/assets/dude.png', {
+  this.load.spritesheet('panda', '../src/assets/panda.png', {
     frameWidth: 32,
     frameHeight: 48
   });
 }
 
 function create() {
-  this.add.image(400, 300, 'field');
+  this.add.image(400, 300, 'bricks');
 
   platforms = this.physics.add.staticGroup();
 
@@ -63,13 +63,13 @@ function create() {
     .refreshBody();
 
   // Player one
-  player = this.physics.add.sprite(100, 450, 'dude');
+  player = this.physics.add.sprite(100, 450, 'panda');
   player.setBounce(0.2);
   player.setCollideWorldBounds(true);
   player.body.setGravityY(300);
 
   // Player two
-  player2 = this.physics.add.sprite(100, 450, 'dude');
+  player2 = this.physics.add.sprite(100, 450, 'panda');
   player2.setBounce(0.2);
   player2.setCollideWorldBounds(true);
   player2.body.setGravityY(300);
@@ -79,7 +79,7 @@ function create() {
 
   this.anims.create({
     key: 'left',
-    frames: this.anims.generateFrameNumbers('dude', {
+    frames: this.anims.generateFrameNumbers('panda', {
       start: 0,
       end: 3
     }),
@@ -91,7 +91,7 @@ function create() {
     key: 'turn',
     frames: [
       {
-        key: 'dude',
+        key: 'panda',
         frame: 4
       }
     ],
@@ -100,7 +100,7 @@ function create() {
 
   this.anims.create({
     key: 'right',
-    frames: this.anims.generateFrameNumbers('dude', {
+    frames: this.anims.generateFrameNumbers('panda', {
       start: 5,
       end: 8
     }),
@@ -110,7 +110,7 @@ function create() {
 
   this.anims.create({
     key: 'left2',
-    frames: this.anims.generateFrameNumbers('dude', {
+    frames: this.anims.generateFrameNumbers('panda', {
       start: 0,
       end: 3
     }),
@@ -122,7 +122,7 @@ function create() {
     key: 'turn2',
     frames: [
       {
-        key: 'dude',
+        key: 'panda',
         frame: 4
       }
     ],
@@ -131,7 +131,7 @@ function create() {
 
   this.anims.create({
     key: 'right2',
-    frames: this.anims.generateFrameNumbers('dude', {
+    frames: this.anims.generateFrameNumbers('panda', {
       start: 5,
       end: 8
     }),
@@ -144,25 +144,9 @@ function create() {
     repeat: bubbleCount
   });
 
-  mediumbubbles = this.physics.add.group({
-    // key: 'mediumbubble'
-    // repeat: bubbleCount
-    // setXY: {
-    //   x: 12,
-    //   y: 0,
-    //   stepX: 70
-    // }
-  });
+  mediumbubbles = this.physics.add.group({});
 
-  smallbubbles = this.physics.add.group({
-    // key: 'smallbubble'
-    // repeat: bubbleSplit
-    // setXY: {
-    //   x: bullet.x,
-    //   y: bullet.y,
-    //   stepX: 20
-    // }
-  });
+  smallbubbles = this.physics.add.group({});
 
   largebubbles.children.iterate(function(child) {
     child.setBounce(1);
@@ -238,7 +222,7 @@ function create() {
 
 function update() {
   cursors = this.input.keyboard.createCursorKeys();
-  keys = this.input.keyboard.addKeys('W,S,A,D');
+  keys = this.input.keyboard.addKeys('TAB,A,D');
 
   //player one keyboard
   if (cursors.left.isDown) {
@@ -274,7 +258,7 @@ function update() {
     player2.anims.play('turn2');
   }
 
-  if (keys.W.isDown) {
+  if (keys.TAB.isDown) {
     fireBullet2();
   }
 }
@@ -293,7 +277,6 @@ function fireBullet2() {
 
 function shootSmallestBubble(bullet, smallbubble) {
   smallbubble.disableBody(true, true);
-  // smallbubble.disableBody(true, true);
   bullet.disableBody(true, true);
 
   score += 10;
@@ -320,13 +303,11 @@ function shootSmallestBubble(bullet, smallbubble) {
       largebubble.setVelocity(Phaser.Math.Between(-200, 200), 20);
     }, 1000);
   }
-  // redbubble.enableBody(true, 0, 0, false, false);
 }
 
 // Player two
 function shootSmallestBubble2(bullet2, smallbubble) {
   smallbubble.disableBody(true, true);
-  console.log(redbubbles.countActive(true));
   if (
     largebubbles.countActive(true) === 0 &&
     mediumbubbles.countActive(true) === 0 &&
@@ -354,14 +335,12 @@ function shootSmallestBubble2(bullet2, smallbubble) {
 // Player one
 function shootMediumBubble(bullet, mediumbubble) {
   mediumbubble.disableBody(true, true);
-  // mediumbubble.disableBody(true, true);
   bullet.disableBody(true, true);
 
   score += 10;
   scoreText.setText('Score: ' + score);
 
   if (this.physics.add.overlap(bullet, mediumbubbles)) {
-    // mediumbubble.disableBody(true, true);
     let x = mediumbubble.x;
     let y = mediumbubble.y;
     for (let i = 0; i <= 1; i++) {
@@ -415,7 +394,6 @@ function shootBubble(bullet, largebubble) {
   scoreText.setText('Score: ' + score);
 
   if (this.physics.add.overlap(bullet, largebubbles)) {
-    console.log(largebubbles);
     let x = largebubble.x;
     let y = largebubble.y;
     for (let i = 0; i <= 1; i++) {
