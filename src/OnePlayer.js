@@ -38,6 +38,8 @@ class OnePlayer extends Phaser.Scene {
     this.load.image('mediumbubble', require('./assets/mediumbubble.png'));
     this.load.image('smallbubble', require('./assets/smallbubble.png'));
     this.load.image('button', require('./assets/button.png'));
+    this.load.audio('music', require('./assets/retro.mp3'));
+    this.load.audio('gameover', require('./assets/gameover.mp3'));
     this.load.spritesheet('panda', require('./assets/panda.png'), {
       frameWidth: 32,
       frameHeight: 48
@@ -46,7 +48,7 @@ class OnePlayer extends Phaser.Scene {
 
   create() {
     this.add.image(400, 300, 'bricks');
-    this.add.image(400, 300, 'button');
+    this.sound.play('music');
 
     platforms = this.physics.add.staticGroup();
 
@@ -277,6 +279,9 @@ function hitByBubble(player, bubble) {
   player.anims.play('turn');
 
   gameOver = true;
+  this.sound.destroy('music');
+  this.sound.play('gameover');
+
 
   // button.setInteractive().on('pointerdown', () => {
   //   this.scene.stop('OnePlayer');
