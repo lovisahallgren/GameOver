@@ -40,26 +40,40 @@ let bubbleCount;
 let bubbleSplit;
 let keys;
 let gameOver;
+let button;
 
-function preload() {
-  this.load.image('bricks', '../src/assets/bricks.png');
-  this.load.image('ground', '../src/assets/ground.png');
-  this.load.image('bambus', '../src/assets/bambu.png');
-  this.load.image('largebubble', '../src/assets/largebubble.png');
-  this.load.image('mediumbubble', '../src/assets/mediumbubble.png');
-  this.load.image('smallbubble', '../src/assets/smallbubble.png');
-  this.load.spritesheet('panda', '../src/assets/panda.png', {
-    frameWidth: 32,
-    frameHeight: 48
-  });
-  this.load.spritesheet('panda2', '../src/assets/panda2.png', {
+let hitByBubble;
+let shootBubble;
+let shootMediumBubble;
+let shootSmallestBubble;
+let fireBullet;
+
+
+class OnePlayer extends Phaser.Scene {
+    constructor(){
+        super({
+            key: 'OnePlayer'
+
+      });
+    }
+
+  preload() {
+  this.load.image('field', require('./assets/field.jpg'));
+  this.load.image('ground', require('./assets/ground.png'));
+  this.load.image('bullets', require('./assets/bullet.png'));
+  this.load.image('largebubble', require('./assets/largebubble.png'));
+  this.load.image('mediumbubble', require('./assets/mediumbubble.png'));
+  this.load.image('smallbubble', require('./assets/smallbubble.png'));
+  this.load.image('button', require('./assets/button.png'));
+  this.load.spritesheet('dude', require('./assets/dude.png'), {
     frameWidth: 32,
     frameHeight: 48
   });
 }
 
-function create() {
-  this.add.image(400, 300, 'bricks');
+  create() {
+  this.add.image(400, 300, 'field');
+  this.add.image(400, 300, 'button');
 
   platforms = this.physics.add.staticGroup();
 
@@ -361,4 +375,13 @@ function hitByBubble(player, player2, bubble) {
   player.anims.play('turn');
 
   gameOver = true;
+
+  button.setInteractive().on('pointerdown', () => {
+  this.scene.stop('OnePlayer')
+  this.scene.start('OnePlayer', {
+
+  })
+ })
+
+
 }
