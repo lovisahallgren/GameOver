@@ -14,6 +14,7 @@ let bubbleCount;
 let bubbleSplit;
 let keys;
 let gameOver;
+let button;
 
 let hitByBubble;
 let shootBubble;
@@ -37,6 +38,7 @@ class OnePlayer extends Phaser.Scene {
   this.load.image('largebubble', require('./assets/largebubble.png'));
   this.load.image('mediumbubble', require('./assets/mediumbubble.png'));
   this.load.image('smallbubble', require('./assets/smallbubble.png'));
+  this.load.image('button', require('./assets/button.png'));
   this.load.spritesheet('dude', require('./assets/dude.png'), {
     frameWidth: 32,
     frameHeight: 48
@@ -46,6 +48,7 @@ class OnePlayer extends Phaser.Scene {
 
   create() {
   this.add.image(400, 300, 'field');
+  this.add.image(400, 300, 'button');
 
   platforms = this.physics.add.staticGroup();
 
@@ -302,6 +305,13 @@ function shootBubble(bullet, largebubble) {
   player.anims.play('turn');
 
   gameOver = true;
+
+  button.setInteractive().on('pointerdown', () => {
+  this.scene.stop('OnePlayer')
+  this.scene.start('OnePlayer', {
+
+  })
+ })
 
 
 }
