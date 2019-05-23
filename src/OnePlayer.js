@@ -11,7 +11,7 @@ let bullets;
 let bullet;
 let cursors;
 let bubbleCount;
-let bubbleSplit;
+let fireCoolDown = -1;
 let keys;
 let gameOver;
 let button;
@@ -178,7 +178,7 @@ class OnePlayer extends Phaser.Scene {
 
 }
 
-  update() {
+function update(time, delta) {
   cursors = this.input.keyboard.createCursorKeys();
 
   //player one keyboard
@@ -196,16 +196,20 @@ class OnePlayer extends Phaser.Scene {
     player.anims.play('turn');
   }
 
-  if (cursors.space.isDown) {
-    fireBullet();
-    }
+  fireCoolDown -= delta;
+  if (cursors.space.isDown && fireCoolDown < 0) {
+    fireCoolDown = 1000;
+    firebambu();
   }
+
 }
 
-function fireBullet() {
-  bullet.enableBody(true, player.x, player.y, true, true);
-  bullet.setVelocityY(-500);
-  bullet.body.setGravityY(-500);
+function firebambu() {
+  // this.bamboos = this.add.group();
+  // let newBambu = new Bambu({ scene: this, x: player.x });
+  bambu.enableBody(true, player.x, player.y, true, true);
+  bambu.setVelocityY(-500);
+  bambu.body.setGravityY(-500);
 }
 
 
