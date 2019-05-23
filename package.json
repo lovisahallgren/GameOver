@@ -2,10 +2,9 @@
   "name": "gameover",
   "version": "1.1.0",
   "description": "",
-  "main": "src/index.js",
+  "main": "index.html",
   "scripts": {
-    "build": "webpack --config webpack/prod.js ",
-    "start": "webpack-dev-server --config webpack/base.js --open"
+    "dev": "parcel index.html"
   },
   "repository": {
     "type": "git",
@@ -32,6 +31,7 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
+    "parcel": "^1.12.3",
     "phaser": "^3.16.2"
   }
 }

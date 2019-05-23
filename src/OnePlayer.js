@@ -1,65 +1,54 @@
 import Phaser from 'phaser';
 // import config from './config';
-
-const config = {
-  type: Phaser.AUTO,
-  width: 800,
-  height: 600,
-  physics: {
-    default: 'arcade',
-    arcade: {
-      gravity: {
-        y: 300
-      },
-      debug: false
-    }
-  },
-  scene: {
-    preload: preload,
-    create: create,
-    update: update
-  }
-};
-
-let game = new Phaser.Game(config);
 let platforms;
 let score = 0;
-let level = 1;
 let scoreText;
-let levelText;
 let player;
-let player2;
 let largebubbles;
 let mediumbubbles;
 let smallbubbles;
-let bambus;
-let bambu;
-let bambu2;
+let bullets;
+let bullet;
 let cursors;
 let bubbleCount;
 let fireCoolDown = -1;
 let keys;
 let gameOver;
+let button;
 
-function preload() {
-  this.load.image('bricks', '../src/assets/bricks.png');
-  this.load.image('ground', '../src/assets/ground.png');
-  this.load.image('bambus', '../src/assets/bambu.png');
-  this.load.image('largebubble', '../src/assets/largebubble.png');
-  this.load.image('mediumbubble', '../src/assets/mediumbubble.png');
-  this.load.image('smallbubble', '../src/assets/smallbubble.png');
-  this.load.spritesheet('panda', '../src/assets/panda.png', {
+let hitByBubble;
+let shootBubble;
+let shootMediumBubble;
+let shootSmallestBubble;
+let fireBullet;
+
+
+class OnePlayer extends Phaser.Scene {
+    constructor(){
+        super({
+            key: 'OnePlayer'
+
+      });
+    }
+
+  preload() {
+  this.load.image('field', require('./assets/field.jpg'));
+  this.load.image('ground', require('./assets/ground.png'));
+  this.load.image('bullets', require('./assets/bullet.png'));
+  this.load.image('largebubble', require('./assets/largebubble.png'));
+  this.load.image('mediumbubble', require('./assets/mediumbubble.png'));
+  this.load.image('smallbubble', require('./assets/smallbubble.png'));
+  this.load.image('button', require('./assets/button.png'));
+  this.load.spritesheet('dude', require('./assets/dude.png'), {
     frameWidth: 32,
     frameHeight: 48
   });
-  this.load.spritesheet('panda2', '../src/assets/panda2.png', {
-    frameWidth: 32,
-    frameHeight: 48
-  });
+
 }
 
-function create() {
-  this.add.image(400, 300, 'bricks');
+  create() {
+  this.add.image(400, 300, 'field');
+  this.add.image(400, 300, 'button');
 
   platforms = this.physics.add.staticGroup();
 
@@ -69,23 +58,17 @@ function create() {
     .refreshBody();
 
   // Player one
-  player = this.physics.add.sprite(100, 450, 'panda');
+  player = this.physics.add.sprite(100, 450, 'dude');
   player.setBounce(0.2);
   player.setCollideWorldBounds(true);
   player.body.setGravityY(300);
 
-  // Player two
-  player2 = this.physics.add.sprite(700, 450, 'panda2');
-  player2.setBounce(0.2);
-  player2.setCollideWorldBounds(true);
-  player2.body.setGravityY(300);
+  bullet = this.physics.add.sprite(player.x, player.y, 'bullets');
 
-  bambu = this.physics.add.sprite(player.x, player.y, 'bambus');
-  bambu2 = this.physics.add.sprite(player2.x, player2.y, 'bambus');
 
   this.anims.create({
     key: 'left',
-    frames: this.anims.generateFrameNumbers('panda', {
+    frames: this.anims.generateFrameNumbers('dude', {
       start: 0,
       end: 3
     }),
@@ -97,7 +80,7 @@ function create() {
     key: 'turn',
     frames: [
       {
-        key: 'panda',
+        key: 'dude',
         frame: 4
       }
     ],
@@ -106,7 +89,7 @@ function create() {
 
   this.anims.create({
     key: 'right',
-    frames: this.anims.generateFrameNumbers('panda', {
+    frames: this.anims.generateFrameNumbers('dude', {
       start: 5,
       end: 8
     }),
@@ -114,45 +97,31 @@ function create() {
     repeat: -1
   });
 
-  this.anims.create({
-    key: 'left2',
-    frames: this.anims.generateFrameNumbers('panda2', {
-      start: 0,
-      end: 3
-    }),
-    frameRate: 10,
-    repeat: -1
-  });
-
-  this.anims.create({
-    key: 'turn2',
-    frames: [
-      {
-        key: 'panda2',
-        frame: 4
-      }
-    ],
-    frameRate: 20
-  });
-
-  this.anims.create({
-    key: 'right2',
-    frames: this.anims.generateFrameNumbers('panda2', {
-      start: 5,
-      end: 8
-    }),
-    frameRate: 10,
-    repeat: -1
-  });
 
   largebubbles = this.physics.add.group({
     key: 'largebubble',
     repeat: bubbleCount
   });
 
-  mediumbubbles = this.physics.add.group({});
+  mediumbubbles = this.physics.add.group({
+    // key: 'mediumbubble'
+    // repeat: bubbleCount
+    // setXY: {
+    //   x: 12,
+    //   y: 0,
+    //   stepX: 70
+    // }
+  });
 
-  smallbubbles = this.physics.add.group({});
+  smallbubbles = this.physics.add.group({
+    // key: 'smallbubble'
+    // repeat: bubbleSplit
+    // setXY: {
+    //   x: bullet.x,
+    //   y: bullet.y,
+    //   stepX: 20
+    // }
+  });
 
   largebubbles.children.iterate(function(child) {
     child.setBounce(1);
@@ -170,72 +139,55 @@ function create() {
     child.setCollideWorldBounds(true);
   });
 
-  scoreText = this.add.text(16, 42, 'score: 0', {
-    fontSize: '32px',
-    fill: '#000'
-  });
-  levelText = this.add.text(16, 16, 'level: 1', {
+  scoreText = this.add.text(16, 16, 'score: 0', {
     fontSize: '32px',
     fill: '#000'
   });
 
-  //player one - colliders
+  //player one
   this.physics.add.collider(player, platforms);
-  this.physics.add.collider(player, largebubbles, hitByBubble, null, this);
-  this.physics.add.collider(player, mediumbubbles, hitByBubble, null, this);
-  this.physics.add.collider(player, smallbubbles, hitByBubble, null, this);
+  this.physics.add.collider(bullet, platforms);
 
-  //player two - colliders
-  this.physics.add.collider(player2, platforms);
-  this.physics.add.collider(player2, largebubbles, hitByBubble, null, this);
-  this.physics.add.collider(player2, mediumbubbles, hitByBubble, null, this);
-  this.physics.add.collider(player2, smallbubbles, hitByBubble, null, this);
 
-  //bubbles - colliders
   this.physics.add.collider(largebubbles, platforms);
   this.physics.add.collider(mediumbubbles, platforms);
   this.physics.add.collider(smallbubbles, platforms);
 
-  //bambus - colliders and overlaps
-  this.physics.add.collider(bambu, platforms);
-  this.physics.add.collider(bambu2, platforms);
-  this.physics.add.overlap(bambu, largebubbles, shootBubble, null, this);
-  this.physics.add.overlap(bambu2, largebubbles, shootBubble, null, this);
-  this.physics.add.overlap(bambu, mediumbubbles, shootMediumBubble, null, this);
+  this.physics.add.collider(player, largebubbles, hitByBubble, null, this);
+
+  this.physics.add.collider(player, mediumbubbles, hitByBubble, null, this);
+
+  this.physics.add.collider(player, smallbubbles, hitByBubble, null, this);
+
+  this.physics.add.overlap(bullet, largebubbles, shootBubble, null, this);
+
   this.physics.add.overlap(
-    bambu2,
+    bullet,
     mediumbubbles,
     shootMediumBubble,
     null,
     this
   );
   this.physics.add.overlap(
-    bambu,
+    bullet,
     smallbubbles,
     shootSmallestBubble,
     null,
     this
   );
-  this.physics.add.overlap(
-    bambu2,
-    smallbubbles,
-    shootSmallestBubble,
-    null,
-    this
-  );
+
 }
 
 function update(time, delta) {
   cursors = this.input.keyboard.createCursorKeys();
-  keys = this.input.keyboard.addKeys('TAB,A,D');
 
   //player one keyboard
   if (cursors.left.isDown) {
-    player.setVelocityX(-200);
+    player.setVelocityX(-160);
 
     player.anims.play('left', true);
   } else if (cursors.right.isDown) {
-    player.setVelocityX(200);
+    player.setVelocityX(160);
 
     player.anims.play('right', true);
   } else {
@@ -250,24 +202,6 @@ function update(time, delta) {
     firebambu();
   }
 
-  //player two keyboard
-  if (keys.A.isDown) {
-    player2.setVelocityX(-200);
-
-    player2.anims.play('left2', true);
-  } else if (keys.D.isDown) {
-    player2.setVelocityX(200);
-
-    player2.anims.play('right2', true);
-  } else {
-    player2.setVelocityX(0);
-
-    player2.anims.play('turn2');
-  }
-
-  if (keys.TAB.isDown) {
-    firebambu2();
-  }
 }
 
 function firebambu() {
@@ -278,19 +212,14 @@ function firebambu() {
   bambu.body.setGravityY(-500);
 }
 
-function firebambu2() {
-  bambu2.enableBody(true, player2.x, player2.y, true, true);
-  bambu2.setVelocityY(-500);
-  bambu2.body.setGravityY(-500);
-}
 
-function shootSmallestBubble(bambu, smallbubble) {
+ function shootSmallestBubble(bullet, smallbubble) {
   smallbubble.disableBody(true, true);
-  bambu.disableBody(true, true);
+  // smallbubble.disableBody(true, true);
+  bullet.disableBody(true, true);
 
-  score += 50;
+  score += 10;
   scoreText.setText('Score: ' + score);
-
   if (
     largebubbles.countActive(true) === 0 &&
     mediumbubbles.countActive(true) === 0 &&
@@ -303,10 +232,8 @@ function shootSmallestBubble(bambu, smallbubble) {
         child.setVelocity(Phaser.Math.Between(-200, 200), 20);
       });
 
-      level += 1;
-      levelText.setText('Level: ' + level);
       let x = player.x < 400;
-      player2.x < 400
+      player.x < 400
         ? Phaser.Math.Between(400, 800)
         : Phaser.Math.Between(0, 400);
       let largebubble = largebubbles.create(x, 16, 'largebubble');
@@ -315,16 +242,20 @@ function shootSmallestBubble(bambu, smallbubble) {
       largebubble.setVelocity(Phaser.Math.Between(-200, 200), 20);
     }, 1000);
   }
+  // redbubble.enableBody(true, 0, 0, false, false);
 }
 
-function shootMediumBubble(bambu, mediumbubble) {
+// Player one
+function shootMediumBubble(bullet, mediumbubble) {
   mediumbubble.disableBody(true, true);
-  bambu.disableBody(true, true);
+  // mediumbubble.disableBody(true, true);
+  bullet.disableBody(true, true);
 
-  score += 20;
+  score += 10;
   scoreText.setText('Score: ' + score);
 
-  if (this.physics.add.overlap(bambu, mediumbubbles)) {
+  if (this.physics.add.overlap(bullet, mediumbubbles)) {
+    // mediumbubble.disableBody(true, true);
     let x = mediumbubble.x;
     let y = mediumbubble.y;
     for (let i = 0; i <= 1; i++) {
@@ -335,16 +266,29 @@ function shootMediumBubble(bambu, mediumbubble) {
       smallbubble.setVelocity(Phaser.Math.Between(-200, 200), 20);
     }
   }
+  // if (this.physics.add.overlap(bullet, mediumbubbles)) {
+  //   // mediumbubble.disableBody(true, true);
+  //   let x = mediumbubble.x;
+  //   let y = mediumbubble.y;
+  //   for (let i = 0; i <= 1; i++) {
+  //     let smallbubble = smallbubbles.create(x, y, 'smallbubble');
+  //     smallbubble.enableBody(true, x, y, true, true);
+  //     smallbubble.setBounce(1);
+  //     smallbubble.setCollideWorldBounds(true);
+  //     smallbubble.setVelocity(Phaser.Math.Between(-200, 200), 20);
+  //   }
+  // }
 }
 
-function shootBubble(bambu, largebubble) {
+function shootBubble(bullet, largebubble) {
   largebubble.disableBody(true, true);
-  bambu.disableBody(true, true);
+  bullet.disableBody(true, true);
 
   score += 10;
   scoreText.setText('Score: ' + score);
 
-  if (this.physics.add.overlap(bambu, largebubbles)) {
+  if (this.physics.add.overlap(bullet, largebubbles)) {
+    console.log(largebubbles);
     let x = largebubble.x;
     let y = largebubble.y;
     for (let i = 0; i <= 1; i++) {
@@ -357,7 +301,7 @@ function shootBubble(bambu, largebubble) {
   }
 }
 
-function hitByBubble(player, player2, bubble) {
+ function hitByBubble(player, bubble) {
   this.physics.pause();
 
   player.setTint(0xff0000);
@@ -365,4 +309,15 @@ function hitByBubble(player, player2, bubble) {
   player.anims.play('turn');
 
   gameOver = true;
+
+  button.setInteractive().on('pointerdown', () => {
+  this.scene.stop('OnePlayer')
+  this.scene.start('OnePlayer', {
+
+  })
+ })
+
+
 }
+
+export default OnePlayer;
