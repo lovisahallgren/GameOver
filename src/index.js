@@ -37,7 +37,7 @@ let bambu;
 let bambu2;
 let cursors;
 let bubbleCount;
-let bubbleSplit;
+let fireCoolDown = -1;
 let keys;
 let gameOver;
 
@@ -225,7 +225,7 @@ function create() {
   );
 }
 
-function update() {
+function update(time, delta) {
   cursors = this.input.keyboard.createCursorKeys();
   keys = this.input.keyboard.addKeys('TAB,A,D');
 
@@ -244,7 +244,9 @@ function update() {
     player.anims.play('turn');
   }
 
-  if (cursors.space.isDown) {
+  fireCoolDown -= delta;
+  if (cursors.space.isDown && fireCoolDown < 0) {
+    fireCoolDown = 1000;
     firebambu();
   }
 
@@ -269,6 +271,8 @@ function update() {
 }
 
 function firebambu() {
+  // this.bamboos = this.add.group();
+  // let newBambu = new Bambu({ scene: this, x: player.x });
   bambu.enableBody(true, player.x, player.y, true, true);
   bambu.setVelocityY(-500);
   bambu.body.setGravityY(-500);
