@@ -2,7 +2,9 @@ import Phaser from 'phaser';
 // import config from './config';
 let platforms;
 let score = 0;
+let level = 1;
 let scoreText;
+let levelText;
 let player;
 let largebubbles;
 let mediumbubbles;
@@ -97,25 +99,9 @@ class OnePlayer extends Phaser.Scene {
       repeat: bubbleCount
     });
 
-    mediumbubbles = this.physics.add.group({
-      // key: 'mediumbubble'
-      // repeat: bubbleCount
-      // setXY: {
-      //   x: 12,
-      //   y: 0,
-      //   stepX: 70
-      // }
-    });
+    mediumbubbles = this.physics.add.group({});
 
-    smallbubbles = this.physics.add.group({
-      // key: 'smallbubble'
-      // repeat: bubbleSplit
-      // setXY: {
-      //   x: bullet.x,
-      //   y: bullet.y,
-      //   stepX: 20
-      // }
-    });
+    smallbubbles = this.physics.add.group({});
 
     largebubbles.children.iterate(function(child) {
       child.setBounce(1);
@@ -133,7 +119,12 @@ class OnePlayer extends Phaser.Scene {
       child.setCollideWorldBounds(true);
     });
 
-    scoreText = this.add.text(16, 16, 'score: 0', {
+    scoreText = this.add.text(16, 40, 'Score: 1', {
+      fontSize: '32px',
+      fill: '#000'
+    });
+
+    levelText = this.add.text(16, 16, 'Level: 0', {
       fontSize: '32px',
       fill: '#000'
     });
@@ -175,11 +166,11 @@ class OnePlayer extends Phaser.Scene {
 
     //player one keyboard
     if (cursors.left.isDown) {
-      player.setVelocityX(-160);
+      player.setVelocityX(-200);
 
       player.anims.play('left', true);
     } else if (cursors.right.isDown) {
-      player.setVelocityX(160);
+      player.setVelocityX(200);
 
       player.anims.play('right', true);
     } else {
@@ -206,17 +197,19 @@ function firebambu() {
 
 function shootSmallestBubble(bambu, smallbubble) {
   smallbubble.disableBody(true, true);
-  // smallbubble.disableBody(true, true);
   bambu.disableBody(true, true);
 
-  score += 10;
+  score += 50;
   scoreText.setText('Score: ' + score);
+
   if (
     largebubbles.countActive(true) === 0 &&
     mediumbubbles.countActive(true) === 0 &&
     smallbubbles.countActive(true) === 0
   ) {
     bubbleCount += 1;
+    level += 1;
+    levelText.setText('Level: ' + level);
     setTimeout(() => {
       largebubbles.children.iterate(function(child) {
         child.enableBody(true, Phaser.Math.Between(0, 800), 0, true, true);
@@ -233,20 +226,17 @@ function shootSmallestBubble(bambu, smallbubble) {
       largebubble.setVelocity(Phaser.Math.Between(-200, 200), 20);
     }, 1000);
   }
-  // redbubble.enableBody(true, 0, 0, false, false);
 }
 
 // Player one
 function shootMediumBubble(bambu, mediumbubble) {
   mediumbubble.disableBody(true, true);
-  // mediumbubble.disableBody(true, true);
   bambu.disableBody(true, true);
 
-  score += 10;
+  score += 20;
   scoreText.setText('Score: ' + score);
 
   if (this.physics.add.overlap(bambu, mediumbubbles)) {
-    // mediumbubble.disableBody(true, true);
     let x = mediumbubble.x;
     let y = mediumbubble.y;
     for (let i = 0; i <= 1; i++) {
@@ -257,18 +247,6 @@ function shootMediumBubble(bambu, mediumbubble) {
       smallbubble.setVelocity(Phaser.Math.Between(-200, 200), 20);
     }
   }
-  // if (this.physics.add.overlap(bullet, mediumbubbles)) {
-  //   // mediumbubble.disableBody(true, true);
-  //   let x = mediumbubble.x;
-  //   let y = mediumbubble.y;
-  //   for (let i = 0; i <= 1; i++) {
-  //     let smallbubble = smallbubbles.create(x, y, 'smallbubble');
-  //     smallbubble.enableBody(true, x, y, true, true);
-  //     smallbubble.setBounce(1);
-  //     smallbubble.setCollideWorldBounds(true);
-  //     smallbubble.setVelocity(Phaser.Math.Between(-200, 200), 20);
-  //   }
-  // }
 }
 
 function shootBubble(bambu, largebubble) {
