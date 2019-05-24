@@ -23,12 +23,12 @@ class StartGame extends Phaser.Scene {
     // this.load.audio('gameMusic', require('./assets/'))
     this.load.image('bricks', require('./assets/bricks.png'));
 
-    this.load.spritesheet('player1', require('./assets/panda.png'), {
+    this.load.spritesheet('player1', require('./assets/panda3.png'), {
       frameWidth: 32,
       frameHeight: 48
     });
 
-    this.load.spritesheet('multiplayer', require('./assets/panda2.png'), {
+    this.load.spritesheet('multiplayer', require('./assets/panda4.png'), {
       frameWidth: 32,
       frameHeight: 48
     });
