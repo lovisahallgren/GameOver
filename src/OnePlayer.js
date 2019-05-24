@@ -280,7 +280,7 @@ function hitByBubble(player, bubble) {
 
   gameOver = true;
   this.sound.destroy('music');
-  this.sound.play('gameover');
+
 
 
   // button.setInteractive().on('pointerdown', () => {

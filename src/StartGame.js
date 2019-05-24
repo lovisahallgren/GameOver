@@ -16,6 +16,9 @@ class StartGame extends Phaser.Scene {
     );
   }
 
+  init(){
+
+}
   preload() {
     // this.load.audio('gameMusic', require('./assets/'))
     this.load.image('bricks', require('./assets/bricks.png'));
@@ -33,6 +36,7 @@ class StartGame extends Phaser.Scene {
 
   create() {
     this.add.image(400, 300, 'bricks');
+
 
     this.add.text(280, 80, 'Start Game', {
       fill: '#000000',
@@ -71,17 +75,20 @@ class StartGame extends Phaser.Scene {
 
     player.setInteractive().on('pointerdown', () => {
       this.scene.stop('StartGame');
-      this.scene.start('OnePlayer', {});
+        this.scene.stop('Desc2');
+      this.scene.start('Desc', {});
     });
 
     multiplayer.setInteractive().on('pointerdown', () => {
       this.scene.stop('StartGame');
-      this.scene.start('MultiPlayer', {});
+      this.scene.stop('Desc');
+      this.scene.start('Desc2', {});
     });
 
     multiplayer2.setInteractive().on('pointerdown', () => {
       this.scene.stop('StartGame');
-      this.scene.start('MultiPlayer', {});
+        this.scene.stop('Desc');
+      this.scene.start('Desc2', {});
     });
   }
 }
