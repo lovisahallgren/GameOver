@@ -5,6 +5,7 @@ let score = 0;
 let level = 1;
 let scoreText;
 let levelText;
+let gameOverText;
 let player;
 let player2;
 let largebubbles;
@@ -170,6 +171,13 @@ class MultiPlayer extends Phaser.Scene {
       fontSize: '32px',
       fill: '#000'
     });
+
+    this.gameOverText = this.add.text(250, 250, 'Game Over', {
+      fontSize: '64px',
+      fill: '#000'
+
+    });
+    this.gameOverText.visible = false;
 
     //player one
     this.physics.add.collider(player, platforms);
@@ -361,6 +369,7 @@ function hitByBubble(player, player2, bubble) {
 
   gameOver = true;
   this.sound.destroy('music');
+  this.gameOverText.visible = true;
 }
 
 export default MultiPlayer;
