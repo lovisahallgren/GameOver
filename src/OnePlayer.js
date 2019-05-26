@@ -5,6 +5,7 @@ let score = 0;
 let level = 1;
 let scoreText;
 let levelText;
+let gameOverText;
 let player;
 let largebubbles;
 let mediumbubbles;
@@ -15,7 +16,6 @@ let bubbleCount;
 let fireCoolDown = -1;
 let keys;
 let gameOver;
-let button;
 
 let hitByBubble;
 let shootBubble;
@@ -28,6 +28,7 @@ class OnePlayer extends Phaser.Scene {
     super({
       key: 'OnePlayer'
     });
+
   }
 
   preload() {
@@ -37,7 +38,6 @@ class OnePlayer extends Phaser.Scene {
     this.load.image('largebubble', require('./assets/largebubble.png'));
     this.load.image('mediumbubble', require('./assets/mediumbubble.png'));
     this.load.image('smallbubble', require('./assets/smallbubble.png'));
-    this.load.image('button', require('./assets/button.png'));
     this.load.audio('music', require('./assets/retro.mp3'));
     this.load.audio('gameover', require('./assets/gameover.mp3'));
     this.load.spritesheet('panda', require('./assets/panda.png'), {
@@ -130,6 +130,13 @@ class OnePlayer extends Phaser.Scene {
       fontSize: '32px',
       fill: '#000'
     });
+
+    this.gameOverText = this.add.text(250, 250, 'Game Over', {
+      fontSize: '64px',
+      fill: '#000'
+
+    });
+    this.gameOverText.visible = false;
 
     //player one
     this.physics.add.collider(player, platforms);
@@ -279,10 +286,9 @@ function hitByBubble(player, bubble) {
 
   gameOver = true;
   this.sound.destroy('music');
-  // button.setInteractive().on('pointerdown', () => {
-  //   this.scene.stop('OnePlayer');
-  //   this.scene.start('OnePlayer', {});
-  // });
+
+  this.gameOverText.visible = true;
+
 }
 
 
