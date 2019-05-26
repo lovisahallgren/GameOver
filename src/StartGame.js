@@ -32,13 +32,14 @@ class StartGame extends Phaser.Scene {
       frameWidth: 32,
       frameHeight: 48
     });
+
   }
 
   create() {
     this.add.image(400, 300, 'bricks');
 
 
-    this.add.text(280, 80, 'Start Game', {
+    this.add.text(280, 200, 'Start Game', {
       fill: '#000000',
       fontSize: '40px'
     });
@@ -66,7 +67,7 @@ class StartGame extends Phaser.Scene {
     var multiplayer2 = this.add.sprite(
       560,
       450,
-      'multiplayer',
+      'player1',
       this.add.text(450, 500, 'Multiplayer', {
         fill: '#000000',
         fontSize: '30px'

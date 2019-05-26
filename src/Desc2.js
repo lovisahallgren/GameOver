@@ -8,7 +8,7 @@ let keys3;
 let shoot;
 let shoot2;
 let shoot3;
-
+let button;
 
 class Desc2 extends Phaser.Scene {
   constructor() {
@@ -18,7 +18,7 @@ class Desc2 extends Phaser.Scene {
         active: true
       },
 
-      { frame: [{ key: ['desc1', 'desc2', 'keys', 'keys2', 'keys3','shoot', 'shoot2','shoot3'] }] }
+      { frame: [{ key: ['desc1', 'desc2', 'keys', 'keys2', 'keys3','shoot', 'shoot2','shoot3', 'button'] }] }
     );
   }
 
@@ -28,48 +28,49 @@ class Desc2 extends Phaser.Scene {
   preload() {
 
     this.load.image('bricks', require('./assets/bricks.png'));
+    this.load.image('button', require('./assets/playbutton.png'));
   }
 
   create() {
     this.add.image(400, 300, 'bricks');
-
+    let button = this.add.image(500, 570,'button');
 
     this.add.text(280, 80, 'How to play', {
       fill: '#000000',
       fontSize: '40px'
     });
 
-          var desc2 =
+          let desc2 =
             this.add.text(320, 200, 'Multiplayer', {
               fill: '#000000',
               fontSize: '30px'
             });
 
-            var keys2 =
-              this.add.text(250, 300, 'Player 1: Move with A and D key', {
+            let keys2 =
+              this.add.text(250, 250, 'Player 1: Move with A and D key', {
                 fill: '#000000',
                 fontSize: '18px'
               });
 
-              var shoot3 =
-                this.add.text(250, 350, 'Shoot with Tab key', {
+              let shoot3 =
+                this.add.text(250, 300, 'Shoot with Tab key', {
                   fill: '#000000',
                   fontSize: '18px'
                 });
 
-              var keys3 =
-                this.add.text(250, 450, 'Player 2: Move Left and Right key', {
+              let keys3 =
+                this.add.text(250, 400, 'Player 2: Move Left and Right key', {
                   fill: '#000000',
                   fontSize: '18px'
                 });
 
-                var shoot2 =
-                  this.add.text(250, 500, 'Shoot with Space key', {
+                let shoot2 =
+                  this.add.text(250, 450, 'Shoot with Space key', {
                     fill: '#000000',
                     fontSize: '18px'
                   });
 
-    desc2.setInteractive().on('pointerdown', () => {
+    button.setInteractive().on('pointerdown', () => {
       this.scene.stop('Desc');
       this.scene.start('MultiPlayer', {});
     });

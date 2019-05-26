@@ -273,20 +273,17 @@ function shootBubble(bambu, largebubble) {
 
 function hitByBubble(player, bubble) {
   this.physics.pause();
-
   player.setTint(0xff0000);
 
   player.anims.play('turn');
 
   gameOver = true;
   this.sound.destroy('music');
-
-
-
   // button.setInteractive().on('pointerdown', () => {
   //   this.scene.stop('OnePlayer');
   //   this.scene.start('OnePlayer', {});
   // });
 }
+
 
 export default OnePlayer;

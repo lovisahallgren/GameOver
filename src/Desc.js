@@ -18,7 +18,7 @@ class Desc extends Phaser.Scene {
         active: true
       },
 
-      { frame: [{ key: ['desc1', 'desc2', 'keys', 'keys2', 'keys3','shoot', 'shoot2','shoot3'] }] }
+      { frame: [{ key: ['desc1', 'desc2', 'keys', 'keys2', 'keys3','shoot', 'shoot2','shoot3', 'button'] }] }
     );
   }
 
@@ -28,11 +28,13 @@ class Desc extends Phaser.Scene {
   preload() {
 
     this.load.image('bricks', require('./assets/bricks.png'));
+    this.load.image('button', require('./assets/playbutton.png'));
 
   }
 
   create() {
     this.add.image(400, 300, 'bricks');
+    let button = this.add.image(500, 550,'button');
 
 
     this.add.text(280, 80, 'How to play', {
@@ -59,7 +61,12 @@ class Desc extends Phaser.Scene {
           });
 
 
-    desc1.setInteractive().on('pointerdown', () => {
+    // desc1.setInteractive().on('pointerdown', () => {
+    //   this.scene.stop('Desc');
+    //   this.scene.start('OnePlayer', {});
+    // });
+
+    button.setInteractive().on('pointerdown', () => {
       this.scene.stop('Desc');
       this.scene.start('OnePlayer', {});
     });
