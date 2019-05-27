@@ -54,5 +54,43 @@ Start the game
 - [#20 Added game over scene](https://github.com/lovisahallgren/GameOver/pull/20)
 
 ## Feedback
-
 [Pull request]() with feedback to [Sofia Garcia Rashid](https://github.com/sof1agarc1a) and [Vincent Lidebo Kjellman](https://github.com/VincentLideboKjellman)
+ 
+<hr />
+By [Elias Johansson](https://github.com/eliasjohansson) & [Per Baltzar](https://github.com/perbaltzar)
+
+Unused variables, variables gets defined once more inside the class. Game works without these variables.
+- StartGame.js - [L3](https://github.com/lovisahallgren/GameOver/blob/c2d90bec5c841e61adc6759a2cc8f91233b79af2/src/StartGame.js#L3) 
+- Desc.js - [L3](https://github.com/lovisahallgren/GameOver/blob/c2d90bec5c841e61adc6759a2cc8f91233b79af2/src/Desc.js#L3)
+<hr />
+
+Preferably use let or const.
+-  StartGame.js - [L47](https://github.com/lovisahallgren/GameOver/blob/c2d90bec5c841e61adc6759a2cc8f91233b79af2/src/StartGame.js#L47)
+- Desc.js - [L47](https://github.com/lovisahallgren/GameOver/blob/c2d90bec5c841e61adc6759a2cc8f91233b79af2/src/Desc.js#L46)
+<hr />
+
+Use class constructor to define properties instead of defining them outside the class as variables.
+- OnePlayer.js - [L3](https://github.com/lovisahallgren/GameOver/blob/c2d90bec5c841e61adc6759a2cc8f91233b79af2/src/OnePlayer.js#L3)
+- Multiplayer - [L3](https://github.com/lovisahallgren/GameOver/blob/c2d90bec5c841e61adc6759a2cc8f91233b79af2/src/MultiPlayer.js#L3)
+> This is probably why you had problems seperating code and using classes.
+<hr />
+
+Put bubbles, players and bamboos in groups so you can add colliders more easily. Currently there is alot of repetition.
+- Multiplayer.js - [L182](https://github.com/lovisahallgren/GameOver/blob/c2d90bec5c841e61adc6759a2cc8f91233b79af2/src/MultiPlayer.js#L182)
+-OnePlayer.js - [L140](https://github.com/lovisahallgren/GameOver/blob/c2d90bec5c841e61adc6759a2cc8f91233b79af2/src/OnePlayer.js#L140)
+<hr />
+
+Assets already loaded in 'StartGame.js'.
+- OnePlayer.js - [L35](https://github.com/lovisahallgren/GameOver/blob/79dd3ee9db55161db4f1a689ff10edf53bec2926/src/OnePlayer.js#L35)
+- Multiplayer.js - [L35](https://github.com/lovisahallgren/GameOver/blob/79dd3ee9db55161db4f1a689ff10edf53bec2926/src/MultiPlayer.js#L35)
+
+These are not necessary for the game and can be erased
+- Desc.js - [L22](https://github.com/lovisahallgren/GameOver/blob/067ec4595701d9b93994b80392808cfadb2098b8/src/Desc.js#L22)
+- Desc2.js - [L21](https://github.com/lovisahallgren/GameOver/blob/067ec4595701d9b93994b80392808cfadb2098b8/src/Desc.js#L21)
+
+Overall
+This is a great and very fun game to play. The code is well structed through out the whole project. Variable and function names are consistent, and easily understood. 
+
+You've put good use of seperating into functions, therefore the main game loop is clean.
+
+For an even better structure, you should seperate gameobjects into their own class. Then you wont have to repeat yourselves as much in the 2 different scenes, single-player & multiplayer.
