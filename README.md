@@ -54,7 +54,6 @@ Start the game
 - [#20 Added game over scene](https://github.com/lovisahallgren/GameOver/pull/20)
 
 ## Feedback
-[Pull request]() with feedback to [Sofia Garcia Rashid](https://github.com/sof1agarc1a) and [Vincent Lidebo Kjellman](https://github.com/VincentLideboKjellman)
  
 <hr />
 By [Elias Johansson](https://github.com/eliasjohansson) & [Per Baltzar](https://github.com/perbaltzar)
