@@ -3,7 +3,7 @@
 Game built in [Phaser3](https://phaser.io/)
 Made by [Lovisa Hallgren](https://github.com/lovisahallgren) & [Rebecca Klaening](https://github.com/RebeccaKlaening)
 
-Live here: []()
+Live here: [bubbletrouble.netlify.com/](https://bubbletrouble.netlify.com/)
 
 ## Installation
 
